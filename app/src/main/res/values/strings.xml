@@ -1,0 +1,16 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">Android Realm Database</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="activity_add_details">Add Details</string>
+
+    <string name="btn_val_save">Save</string>
+    <string name="btn_val_edit">Edit</string>
+
+    <string name="hint_search">Search</string>
+
+    <string name="txt_name">Name : <xliff:g id="view">%1$s</xliff:g></string>
+    <string name="txt_age">Age : <xliff:g id="view">%1$s</xliff:g>Yrs.</string>
+    <string name="txt_location">Loc : <xliff:g id="view">%1$s</xliff:g></string>
+    <string name="txt_designation">Desig : <xliff:g id="view">%1$s</xliff:g></string>
+</resources>
