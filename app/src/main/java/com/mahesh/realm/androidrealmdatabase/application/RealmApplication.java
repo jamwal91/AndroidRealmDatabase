@@ -14,8 +14,6 @@ import io.realm.RealmConfiguration;
 
 public class RealmApplication extends Application {
 
-    private static Realm realm;
-
     private static RealmApplication mInstance;
 
     @Override
@@ -23,27 +21,17 @@ public class RealmApplication extends Application {
         super.onCreate();
         Realm.init(this);
         mInstance = this;
+
+        Realm.setDefaultConfiguration(getRealmConfiguration());
     }
 
     public static RealmApplication getInstance() {
         return mInstance;
     }
 
-    public Realm getRealm() {
-        return getRealmDatabase();
-    }
-
-    private static Realm getRealmDatabase() {
-
-        if (realm == null) {
-            realm = Realm.getInstance(getRealmConfiguration());
-        }
-
-        return realm;
-    }
-
-    private static RealmConfiguration getRealmConfiguration() {
+    private RealmConfiguration getRealmConfiguration() {
         return new RealmConfiguration.Builder()
+                .name(Realm.DEFAULT_REALM_NAME)
                 .encryptionKey(getKey())
                 .deleteRealmIfMigrationNeeded()
                 .build();

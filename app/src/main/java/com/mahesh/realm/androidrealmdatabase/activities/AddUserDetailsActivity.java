@@ -15,6 +15,7 @@ import com.mahesh.realm.androidrealmdatabase.R;
 import com.mahesh.realm.androidrealmdatabase.application.RealmApplication;
 import com.mahesh.realm.androidrealmdatabase.definition.AppConstants;
 import com.mahesh.realm.androidrealmdatabase.model.Person;
+import com.mahesh.realm.androidrealmdatabase.realmController.RealmController;
 
 import io.realm.Realm;
 import io.realm.Realm.Transaction;
@@ -30,10 +31,14 @@ public class AddUserDetailsActivity extends AppCompatActivity implements View.On
 
     private ProgressDialog progressDialog;
 
+    private Realm realm;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_user_details);
+
+        realm = RealmController.with(this).getRealm();
 
         setupActionBar();
         findIds();
@@ -121,7 +126,17 @@ public class AddUserDetailsActivity extends AppCompatActivity implements View.On
 
     private void saveData() {
         showProgressDialog();
-        RealmApplication.getInstance().getRealm().executeTransactionAsync(new Transaction() {
+
+        Person person = new Person();
+        person.setName(et_name.getText().toString().trim());
+        person.setAge(Integer.parseInt(et_age.getText().toString().trim()));
+        person.setDesignation(et_designation.getText().toString().trim());
+        person.setLocation(et_location.getText().toString().trim());
+        RealmController.getInstance().savePerson(person);
+        hideProgressDialog();
+//        finish();
+
+       /* realm.executeTransactionAsync(new Transaction() {
             @Override
             public void execute(Realm realm) {
 
@@ -130,6 +145,8 @@ public class AddUserDetailsActivity extends AppCompatActivity implements View.On
                 person.setAge(Integer.parseInt(et_age.getText().toString().trim()));
                 person.setDesignation(et_designation.getText().toString().trim());
                 person.setLocation(et_location.getText().toString().trim());
+
+
             }
         }, new Transaction.OnSuccess() {
             @Override
@@ -145,12 +162,12 @@ public class AddUserDetailsActivity extends AppCompatActivity implements View.On
                 error.printStackTrace();
                 Toast.makeText(AddUserDetailsActivity.this, "onError(Throwable error)", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
     }
 
     private void updateData() {
         showProgressDialog();
-        RealmApplication.getInstance().getRealm().executeTransactionAsync(new Transaction() {
+        realm.executeTransactionAsync(new Transaction() {
             @Override
             public void execute(Realm realm) {
                 person.setName(et_name.getText().toString().trim());

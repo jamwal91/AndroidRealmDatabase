@@ -25,16 +25,19 @@ import io.realm.RealmResults;
  * Created by root on 30/12/16.
  */
 
+@SuppressWarnings("ALL")
 public class PersonAdapter extends RecyclerSwipeAdapter<PersonAdapter.ViewHolder> {
 
     private RealmResults<Person> personData;
     private Context context;
+    private Realm realm;
 
     private long lastClickTime = 0L;
 
-    public PersonAdapter(Context context, RealmResults<Person> personData) {
+    public PersonAdapter(Context context, Realm realm, RealmResults<Person> personData) {
         this.context = context;
         this.personData = personData;
+        this.realm = realm;
     }
 
     @Override
@@ -134,9 +137,9 @@ public class PersonAdapter extends RecyclerSwipeAdapter<PersonAdapter.ViewHolder
         }
 
         private void deleteData() {
-            RealmApplication.getInstance().getRealm().beginTransaction();
+            realm.beginTransaction();
             personData.get(getAdapterPosition()).deleteFromRealm();
-            RealmApplication.getInstance().getRealm().commitTransaction();
+            realm.commitTransaction();
             swipeLayout.close(true, true);
             notifyItemRemoved(getAdapterPosition());
         }

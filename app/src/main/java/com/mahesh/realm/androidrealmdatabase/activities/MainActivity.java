@@ -20,11 +20,12 @@ import android.widget.Toast;
 
 import com.mahesh.realm.androidrealmdatabase.R;
 import com.mahesh.realm.androidrealmdatabase.adatpers.PersonAdapter;
-import com.mahesh.realm.androidrealmdatabase.application.RealmApplication;
 import com.mahesh.realm.androidrealmdatabase.definition.AppConstants;
 import com.mahesh.realm.androidrealmdatabase.model.Person;
+import com.mahesh.realm.androidrealmdatabase.realmController.RealmController;
 import com.mahesh.realm.androidrealmdatabase.swipe.util.Attributes;
 
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,16 +40,20 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
 
+    private Realm realm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        realm = RealmController.with(this).getRealm();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         findIds();
         setListeners();
-
     }
 
     @Override
@@ -59,8 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupRecyclerView() {
         showProgressDialog();
-        person = RealmApplication.getInstance().getRealm().where(Person.class).findAll();
-        adapter = new PersonAdapter(this, person);
+        person = realm.where(Person.class).findAll();
+        adapter = new PersonAdapter(this, realm, person);
         adapter.setMode(Attributes.Mode.Single);
         personData.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         personData.setItemAnimator(new DefaultItemAnimator());
@@ -91,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        RealmApplication.getInstance().getRealm().close();
+        realm.close();
     }
 
     @Override
@@ -139,17 +144,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public RealmResults<Person> searchPerson(String name) {
-        RealmResults<Person> results = RealmApplication.getInstance().getRealm().where(Person.class).equalTo("name", name).findAll();
+        RealmResults<Person> results = realm.where(Person.class).equalTo("name", name).findAll();
 
-        RealmApplication.getInstance().getRealm().beginTransaction();
-        RealmApplication.getInstance().getRealm().commitTransaction();
+        realm.beginTransaction();
+        realm.commitTransaction();
 
         return results;
     }
 
 
     private void updateList() {
-        person = RealmApplication.getInstance().getRealm().where(Person.class).findAll();
+        person = realm.where(Person.class).findAll();
         adapter.notifyDatasetChanged();
     }
 
